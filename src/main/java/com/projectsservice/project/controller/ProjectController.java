@@ -30,7 +30,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @Topic(name = "testdapr1", pubsubName = "employeepubsub")
+    @Topic(name = "testdapr", pubsubName = "employeepubsub")
     @PostMapping(value = "/notify",consumes = MediaType.ALL_VALUE)
     public Mono<Void> getNotification(@RequestBody (required = false) CloudEvent<String> cloudEvent){
         log.info("Project get notification method call");
