@@ -1,21 +1,15 @@
 package com.projectsservice.project.controller;
 
-import com.projectsservice.project.daprservice.DaprService;
 import com.projectsservice.project.dto.ProjectDTO;
 import com.projectsservice.project.entity.Project;
 import com.projectsservice.project.mapper.ProjectMapper;
 import com.projectsservice.project.service.ProjectService;
-import io.dapr.Topic;
-import io.dapr.client.DaprClient;
-import io.dapr.client.domain.CloudEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,18 +18,11 @@ import java.util.List;
 public class ProjectController {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
-    @Autowired
-    private DaprService daprService;
+
 
     @Autowired
     private ProjectService projectService;
 
-    @Topic(name = "testdapr", pubsubName = "employeepubsub")
-    @PostMapping(value = "/notify",consumes = MediaType.ALL_VALUE)
-    public Mono<Void> getNotification(@RequestBody (required = false) CloudEvent<String> cloudEvent){
-        log.info("Project get notification method call");
-        return daprService.getNotification(cloudEvent);
-    }
 
     @PostMapping
     public ResponseEntity<ProjectDTO> addProject(@RequestBody ProjectDTO projectDTO) {
@@ -54,8 +41,8 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProjectById(@PathVariable("id") Long id) {
         Project project = projectService.findByProjectId(id);
-        if(project==null){
-            return new ResponseEntity<>(null,HttpStatus.NO_CONTENT);
+        if (project == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
         ProjectDTO projectDTO = ProjectMapper.mapToProjectDTO(project);
         return new ResponseEntity<>(projectDTO, HttpStatus.OK);
